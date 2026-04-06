@@ -217,13 +217,13 @@ des visitations surnaturelles; une transformation profonde: une manifestation ac
   visionMission: {
     vision: {
       title: "Notre Vision",
-      text: "Être des vases entre les mains de Dieu pour l'impact holistique des nations.",
+      text: "Être des vases de Dieu pour un impact holistique dans le monde.",
       bibleRef: "Ésaïe 60 : 1 & 22",
       icon: "🕊️",
     },
     mission: {
       title: "Notre Mission",
-      text: "Unis sous un Ciel Ouvert pour impacter toutes les sphères de la société pour la gloire de Dieu.",
+      text: "Unis sous un Ciel Ouvert pour impacter toutes les sphères des nations pour Dieu.",
       bibleRef: "Ésaïe 42 : 1 & 6 ; Matthieu 5 : 16",
       icon: "✨",
     },
