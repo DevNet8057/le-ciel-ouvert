@@ -43,31 +43,6 @@ export default function RSVP() {
   // @ts-ignore - React Hook Form watch() API incompatible with React Compiler
   const presence = watch("presence") as "oui" | "non" | undefined;
 
-  const onSubmit = async (data: RSVPFormData) => {
-    setIsLoading(true);
-    console.log("✅ RSVP soumis :", data);
-
-    // ── OPTION A : Formspree (décommenter et remplacer TON_ID) ──
-    // await fetch('https://formspree.io/f/TON_ID', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(data),
-    // })
-
-    // ── OPTION B : EmailJS (npm install @emailjs/browser, décommenter) ──
-    // import emailjs from '@emailjs/browser'
-    // await emailjs.send('SERVICE_ID', 'TEMPLATE_ID', {
-    //   prenom: data.prenom, nom: data.nom,
-    //   email: data.email, phone: data.phone,
-    //   presence: data.presence, personnes: data.personnes,
-    //   message: data.message,
-    // }, 'CLE_PUBLIQUE')
-
-    await new Promise((r) => setTimeout(r, 1500));
-    setIsLoading(false);
-    setSubmitted(true);
-  };
-
   const inputClass = `
     w-full border-b-2 border-[#C9A84E]/50 bg-transparent py-3
     font-cormorant text-lg text-[#2a1f0e]
@@ -76,34 +51,102 @@ export default function RSVP() {
     placeholder:text-[#b8a88a]
   `;
 
+  const onSubmit = async (data: RSVPFormData) => {
+    setIsLoading(true);
+    try {
+      console.log("📧 Envoi RSVP:", data);
+      const response = await fetch("/api/rsvp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Erreur serveur");
+      }
+
+      setSubmitted(true);
+      console.log("✅ RSVP envoyé avec succès!");
+    } catch (error) {
+      console.error("❌ Erreur RSVP:", error);
+      alert("Une erreur est survenue lors de l'envoi. Merci de réessayer.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <section
       id="rsvp"
       className="py-24 md:py-32 lg:py-40 relative overflow-hidden"
       style={{
-        backgroundColor: '#ffffff',
+        backgroundColor: "#ffffff",
       }}
     >
       {/* Petites décorations */}
-      <div className="absolute inset-0 pointer-events-none select-none" aria-hidden="true">
-        <svg className="absolute top-12 left-8 opacity-[0.04] w-24" viewBox="0 0 40 40" fill="none">
-          <path d="M20 4V36M4 20H36" stroke="#8a6a08" strokeWidth="1.5" strokeLinecap="round"/>
-          <circle cx="20" cy="20" r="4" stroke="#8a6a08" strokeWidth="1"/>
+      <div
+        className="absolute inset-0 pointer-events-none select-none"
+        aria-hidden="true"
+      >
+        <svg
+          className="absolute top-12 left-8 opacity-[0.04] w-24"
+          viewBox="0 0 40 40"
+          fill="none"
+        >
+          <path
+            d="M20 4V36M4 20H36"
+            stroke="#8a6a08"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+          <circle cx="20" cy="20" r="4" stroke="#8a6a08" strokeWidth="1" />
         </svg>
-        <svg className="absolute top-32 right-12 opacity-[0.03] w-16" viewBox="0 0 40 40" fill="none">
-          <path d="M20 4V36M4 20H36" stroke="#8a6a08" strokeWidth="1.5" strokeLinecap="round"/>
-          <circle cx="20" cy="20" r="4" stroke="#8a6a08" strokeWidth="1"/>
+        <svg
+          className="absolute top-32 right-12 opacity-[0.03] w-16"
+          viewBox="0 0 40 40"
+          fill="none"
+        >
+          <path
+            d="M20 4V36M4 20H36"
+            stroke="#8a6a08"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+          <circle cx="20" cy="20" r="4" stroke="#8a6a08" strokeWidth="1" />
         </svg>
-        <svg className="absolute bottom-24 left-16 opacity-[0.03] w-12" viewBox="0 0 40 40" fill="none">
-          <path d="M20 4V36M4 20H36" stroke="#8a6a08" strokeWidth="1.5" strokeLinecap="round"/>
-          <circle cx="20" cy="20" r="4" stroke="#8a6a08" strokeWidth="1"/>
+        <svg
+          className="absolute bottom-24 left-16 opacity-[0.03] w-12"
+          viewBox="0 0 40 40"
+          fill="none"
+        >
+          <path
+            d="M20 4V36M4 20H36"
+            stroke="#8a6a08"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+          <circle cx="20" cy="20" r="4" stroke="#8a6a08" strokeWidth="1" />
         </svg>
-        <svg className="absolute bottom-12 right-8 opacity-[0.04] w-20" viewBox="0 0 40 40" fill="none">
-          <path d="M20 4V36M4 20H36" stroke="#8a6a08" strokeWidth="1.5" strokeLinecap="round"/>
-          <circle cx="20" cy="20" r="4" stroke="#8a6a08" strokeWidth="1"/>
+        <svg
+          className="absolute bottom-12 right-8 opacity-[0.04] w-20"
+          viewBox="0 0 40 40"
+          fill="none"
+        >
+          <path
+            d="M20 4V36M4 20H36"
+            stroke="#8a6a08"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+          <circle cx="20" cy="20" r="4" stroke="#8a6a08" strokeWidth="1" />
         </svg>
-        <span className="absolute top-1/4 right-1/4 font-cinzel text-[#8a6a08]/[0.025] text-[100px] font-bold select-none">✦</span>
-        <span className="absolute bottom-1/3 left-1/5 font-cinzel text-[#8a6a08]/[0.02] text-[60px] font-bold select-none">✦</span>
+        <span className="absolute top-1/4 right-1/4 font-cinzel text-[#8a6a08]/[0.025] text-[100px] font-bold select-none">
+          ✦
+        </span>
+        <span className="absolute bottom-1/3 left-1/5 font-cinzel text-[#8a6a08]/[0.02] text-[60px] font-bold select-none">
+          ✦
+        </span>
       </div>
       <div className="max-w-2xl mx-auto px-6">
         <SectionTitle
