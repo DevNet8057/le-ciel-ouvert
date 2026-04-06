@@ -54,10 +54,10 @@ export default function DressCode() {
                 className="flex flex-col items-center gap-3 group cursor-default"
               >
                 <motion.div
-                  className="w-24 h-24 md:w-32 md:h-32 rounded-full shadow-lg border-4 border-white transition-transform duration-300"
+                  className="w-24 h-24 md:w-32 md:h-32 rounded-full shadow-lg border-1 border-black transition-transform duration-300"
                   style={{
                     backgroundColor: color.hex,
-                    boxShadow: `0 8px 30px ${color.hex}40`,
+                    boxShadow: `0 8px 30px ${color.hex}100`,
                   }}
                   whileHover={{ scale: 1.08 }}
                 />

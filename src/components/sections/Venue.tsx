@@ -1,82 +1,139 @@
-'use client'
-import { motion } from 'framer-motion'
-import SectionTitle from '@/components/ui/SectionTitle'
-import ScrollReveal from '@/components/ui/ScrollReveal'
-import { WEDDING } from '@/lib/constants'
-import { fadeInUp, staggerContainer } from '@/lib/animations'
-import type { Venue as VenueType } from '@/types'
+"use client";
+import ScrollReveal from "@/components/ui/ScrollReveal";
+import SectionTitle from "@/components/ui/SectionTitle";
+import { scaleIn, staggerContainer } from "@/lib/animations";
+import { WEDDING } from "@/lib/constants";
+import type { WeddingEvent } from "@/types";
+import { motion } from "framer-motion";
 
-const venueIcons: Record<string, string> = {
-  'Mariage Civil':             '⚖️',
-  'Rassemblement familial':    '🕊️',
-  'Cérémonie Religieuse':      '✝️',
-  'Réception':                 '🥂',
-}
+function EventCard({
+  event,
+  delay = 0,
+}: {
+  event: WeddingEvent;
+  delay?: number;
+}) {
+  return (
+    <motion.div
+      variants={scaleIn}
+      transition={{ delay }}
+      className="glass-card rounded-2xl p-6 md:p-8 border border-[#8a6a08]/15 hover:-translate-y-1 hover:shadow-[0_8px_40px_rgba(138,106,8,0.25)] transition-all duration-300 relative overflow-hidden"
+    >
+      {/* Icône grande en arrière-plan */}
+      <div className="absolute top-3 right-4 text-7xl opacity-10 select-none pointer-events-none">
+        {event.icon}
+      </div>
 
-function getIcon(role: string): string {
-  for (const [key, val] of Object.entries(venueIcons)) {
-    if (role.includes(key)) return val
-  }
-  return '📍'
+      <div className="relative z-10">
+        <div className="flex items-center gap-3 mb-4">
+          <span className="text-3xl">{event.icon}</span>
+          <div>
+            <p className="font-cinzel text-[#8a6a08] text-xs uppercase tracking-[0.25em]">
+              {event.date}
+            </p>
+            <p className="font-inter text-[#718096] text-xs">{event.day}</p>
+          </div>
+        </div>
+
+        <h3 className="font-cinzel text-[#1A2744] text-xl md:text-2xl font-bold mb-1">
+          {event.title}
+        </h3>
+        <p className="font-cormorant italic text-[#5BAEE8] text-lg mb-3">
+          {event.location}
+        </p>
+        <p className="font-inter text-[#718096] text-sm mb-1">
+          {event.address}
+        </p>
+        <p className="font-inter text-[#4A5568] text-sm mb-5">
+          {event.description}
+        </p>
+
+        <a
+          href={event.mapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 font-inter text-xs uppercase tracking-widest text-[#8a6a08] border border-[#8a6a08]/40 rounded-full px-4 py-2 hover:bg-[#8a6a08] hover:text-white transition-all duration-300"
+        >
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+          Voir sur Maps
+        </a>
+      </div>
+    </motion.div>
+  );
 }
 
 export default function Venue() {
+  const thursday = WEDDING.events.filter((e) => e.id === "traditional");
+  const saturday = WEDDING.events.filter((e) => e.id !== "traditional");
+
   return (
     <section id="lieux" className="py-24 md:py-32 lg:py-40 section-gradient">
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
         <SectionTitle
-          pretitle="Retrouvez-nous"
-          title="Les Lieux"
-          subtitle="Chaque lieu, une étape de notre journée bénie"
+          pretitle="Marquez vos agendas"
+          title="Le Programme"
+          subtitle="Les temps forts de notre célébration"
         />
 
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8"
-        >
-          {WEDDING.venues.map((venue, index) => (
-            <motion.div
-              key={venue.name}
-              variants={fadeInUp}
-              transition={{ delay: index * 0.12 }}
-              className="glass-card rounded-2xl p-6 md:p-8 border border-[#8a6a08]/10 relative overflow-hidden hover:-translate-y-1 hover:shadow-[0_8px_40px_rgba(138,106,8,0.2)] transition-all duration-300"
-            >
-              {/* Numéro décoratif */}
-              <span className="absolute top-2 right-4 font-cinzel text-[#8a6a08]/15 text-7xl font-bold leading-none select-none">
-                {String(index + 1).padStart(2, '0')}
-              </span>
+        {/* Jour 1 - Jeudi */}
+        <ScrollReveal className="mb-12">
+          <h3 className="font-cinzel text-[#1A2744] text-xl font-bold text-center mb-2">
+            Jeudi <span className="text-[#8a6a08]">14 Mai 2026</span>
+          </h3>
+          <p className="font-cormorant italic text-[#718096] text-center text-lg mb-8">
+            Mariage Traditionnel
+          </p>
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-1 max-w-lg mx-auto"
+          >
+            {thursday.map((e, i) => (
+              <EventCard key={e.id} event={e} delay={i * 0.1} />
+            ))}
+          </motion.div>
+        </ScrollReveal>
 
-              <div className="relative z-10">
-                <div className="text-4xl mb-4">{getIcon(venue.role)}</div>
-                <h3 className="font-cinzel text-[#1A2744] text-xl md:text-2xl font-bold mb-1">
-                  {venue.name}
-                </h3>
-                <p className="font-cormorant italic text-[#8a6a08] text-lg mb-3">
-                  {venue.role}
-                </p>
-                <p className="font-inter text-[#718096] text-sm mb-5">
-                  {venue.address}
-                </p>
-                <a
-                  href={venue.mapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 font-inter text-xs uppercase tracking-widest text-[#8a6a08] border border-[#8a6a08]/40 rounded-full px-5 py-2.5 hover:bg-[#8a6a08] hover:text-white transition-all duration-300"
-                >
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                    <circle cx="12" cy="10" r="3"/>
-                  </svg>
-                  Voir sur Google Maps
-                </a>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
+        {/* Séparateur */}
+        <div className="flex items-center gap-4 my-12">
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent to-[#8a6a08]/30" />
+          <span className="text-[#8a6a08] text-xl">✦</span>
+          <div className="flex-1 h-px bg-gradient-to-l from-transparent to-[#8a6a08]/30" />
+        </div>
+
+        {/* Jour 2 - Samedi */}
+        <ScrollReveal>
+          <h3 className="font-cinzel text-[#1A2744] text-xl font-bold text-center mb-2">
+            Samedi <span className="text-[#8a6a08]">16 Mai 2026</span>
+          </h3>
+          <p className="font-cormorant italic text-[#718096] text-center text-lg mb-8">
+            Le Grand Jour
+          </p>
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
+            {saturday.map((e, i) => (
+              <EventCard key={e.id} event={e} delay={i * 0.12} />
+            ))}
+          </motion.div>
+        </ScrollReveal>
       </div>
     </section>
-  )
+  );
 }

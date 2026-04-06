@@ -4,7 +4,6 @@ import Navigation from "@/components/layout/Navigation";
 import DressCode from "@/components/sections/DressCode";
 import Gallery from "@/components/sections/Gallery";
 import Hero from "@/components/sections/Hero";
-import Program from "@/components/sections/Program";
 import RSVP from "@/components/sections/RSVP";
 import Story from "@/components/sections/Story";
 import Venue from "@/components/sections/Venue";
@@ -16,10 +15,9 @@ export default function Home() {
       <main>
         <Hero />
         <Story />
-        <Program />
+        <Venue />
         <Gallery />
         <DressCode />
-        <Venue />
         <RSVP />
       </main>
       <Footer />

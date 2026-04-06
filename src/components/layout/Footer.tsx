@@ -1,13 +1,11 @@
-'use client'
-import { motion } from 'framer-motion'
-import { fadeInUp } from '@/lib/animations'
-import ScrollReveal from '@/components/ui/ScrollReveal'
-import DecorativeCross from '@/components/ui/DecorativeCross'
+"use client";
+import DecorativeCross from "@/components/ui/DecorativeCross";
+import ScrollReveal from "@/components/ui/ScrollReveal";
+import { fadeInUp } from "@/lib/animations";
 
 export default function Footer() {
   return (
     <footer className="bg-[#1A2744] py-16 md:py-24 text-center relative overflow-hidden">
-
       {/* Particules dorées subtiles */}
       <div className="absolute inset-0 opacity-5">
         {[...Array(6)].map((_, i) => (
@@ -32,7 +30,7 @@ export default function Footer() {
           </h3>
 
           {/* Ligne dorée */}
-          <div className="gold-divider mb-6" />
+          <div className="gold-divider mb-8" />
 
           {/* Citation */}
           <p className="font-cormorant italic text-white/60 text-lg md:text-xl leading-relaxed mb-3">
@@ -45,13 +43,62 @@ export default function Footer() {
           </p>
 
           {/* Ligne finale */}
-          <div className="gold-divider mb-6" />
+          <div className="gold-divider mb-8" />
 
-          <p className="font-inter text-white/30 text-xs tracking-widest">
+          <p className="font-inter text-white/30 text-xs tracking-widest mb-12">
             Avec amour ✦ Ange Esther & Elvis Dirane
           </p>
+
+          {/* Équipe de Développement */}
+          <div className="mb-12 pb-8 border-b border-white/10">
+            <h4 className="font-inter text-white/50 text-xs uppercase tracking-widest mb-3">
+              Équipe de Développement
+            </h4>
+            <p className="font-inter text-white/40 text-xs">
+              Conception et développement: @NKBV
+            </p>
+          </div>
+
+          {/* Contact Section - Petit texte en bas */}
+          <div className="text-center">
+            <h4 className="font-inter text-white/40 text-xs uppercase tracking-widest mb-3">
+              Nous Contacter
+            </h4>
+            <div className="font-inter text-white/50 text-xs space-y-1.5 leading-relaxed">
+              <p className="text-white/60">Benilde NJEUTCHOU</p>
+
+              {/* Email */}
+              <a
+                href="mailto:devnet8057@gmail.com"
+                className="block hover:text-[#D4AF37] transition-colors"
+              >
+                📧 devnet8057@gmail.com
+              </a>
+
+              {/* WhatsApp & Téléphone */}
+              <a
+                href="https://wa.me/237680154116"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block hover:text-[#D4AF37] transition-colors"
+              >
+                💬 WhatsApp: +237 680 154 116
+              </a>
+              <p>📞 Appel: +237 657 546 880</p>
+
+              {/* TikTok */}
+              <a
+                href="https://www.tiktok.com/@benildenjeutchou"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block hover:text-[#D4AF37] transition-colors"
+              >
+                🎵 TikTok: @earningrun
+              </a>
+            </div>
+          </div>
         </ScrollReveal>
       </div>
     </footer>
-  )
+  );
 }
