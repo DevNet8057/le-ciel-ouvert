@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
     console.error("❌ Erreur RSVP:", error);
     const errorMessage =
       error instanceof z.ZodError
-        ? `Validation error: ${error.errors.map((e) => e.message).join(", ")}`
+        ? `Validation error: ${error.issues.map((e) => e.message).join(", ")}`
         : error instanceof Error
           ? error.message
           : "Erreur inconnue";
