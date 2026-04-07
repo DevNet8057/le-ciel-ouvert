@@ -339,7 +339,7 @@ export default function RSVP() {
                 </label>
                 <select
                   id="personnes"
-                  {...register("personnes")}
+                  {...register("personnes", { valueAsNumber: true })}
                   className={`${inputClass} cursor-pointer`}
                 >
                   {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
