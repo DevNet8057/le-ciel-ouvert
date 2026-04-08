@@ -53,14 +53,6 @@ export default function RSVP() {
     placeholder:text-[#b8a88a]
   `;
 
-  const selectClass = `
-    w-full border-b-2 border-[#C9A84E]/50 bg-white py-3
-    font-cormorant text-lg text-[#2a1f0e]
-    focus:outline-none focus:border-[#8a6a08]
-    transition-colors duration-300
-    cursor-pointer
-  `;
-
   const onSubmit = async (data: RSVPFormData) => {
     setIsLoading(true);
     try {
@@ -341,26 +333,34 @@ export default function RSVP() {
                 )}
               </motion.div>
 
-              {/* Nombre de personnes */}
-              <motion.div variants={fadeInUp}>
-                <label
-                  htmlFor="personnes"
-                  className="font-inter text-xs uppercase tracking-widest text-[#8a7a5e] block mb-2"
+              {/* Nombre de personnes - Affiche seulement si "oui" */}
+              {presence === "oui" && (
+                <motion.div
+                  variants={fadeInUp}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  👥 Nombre de personnes
-                </label>
-                <select
-                  id="personnes"
-                  {...register("personnes", { valueAsNumber: true })}
-                  className={selectClass}
-                >
-                  {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
-                    <option key={n} value={n}>
-                      {n} personne{n > 1 ? "s" : ""}
-                    </option>
-                  ))}
-                </select>
-              </motion.div>
+                  <label
+                    htmlFor="personnes"
+                    className="font-inter text-xs uppercase tracking-widest text-[#8a7a5e] block mb-2"
+                  >
+                    👥 Nombre de personnes
+                  </label>
+                  <select
+                    id="personnes"
+                    {...register("personnes", { valueAsNumber: true })}
+                    className={inputClass}
+                  >
+                    {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+                      <option key={n} value={n}>
+                        {n} personne{n > 1 ? "s" : ""}
+                      </option>
+                    ))}
+                  </select>
+                </motion.div>
+              )}
 
               {/* Message */}
               <motion.div variants={fadeInUp}>

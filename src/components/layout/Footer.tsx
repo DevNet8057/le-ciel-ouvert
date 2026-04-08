@@ -82,14 +82,14 @@ export default function Footer() {
               whileInView="visible"
               viewport={{ once: true }}
             >
-              {/* Email */}
+              {/* Email - Développeur */}
               <motion.a
                 href="mailto:devnet8057@gmail.com"
                 variants={fadeInUp}
                 whileHover={{ scale: 1.15, y: -8 }}
                 whileTap={{ scale: 0.95 }}
                 className="group relative flex flex-col items-center gap-2"
-                title="Envoyer un email"
+                title="Contacter le développeur"
               >
                 {/* Icône Email */}
                 <motion.div className="relative w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br from-[#8a6a08]/20 to-[#8a6a08]/5 border border-[#8a6a08]/30 group-hover:border-[#8a6a08]/60 transition-all duration-300">
