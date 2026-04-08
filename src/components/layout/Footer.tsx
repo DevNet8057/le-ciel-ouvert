@@ -84,7 +84,7 @@ export default function Footer() {
             >
               {/* Email */}
               <motion.a
-                href="mailto:megaptcheloweelvisdirane@gmail.com"
+                href="mailto:devnet8057@gmail.com"
                 variants={fadeInUp}
                 whileHover={{ scale: 1.15, y: -8 }}
                 whileTap={{ scale: 0.95 }}

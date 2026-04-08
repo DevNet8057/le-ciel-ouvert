@@ -2,6 +2,7 @@
 import DecorativeCross from "@/components/ui/DecorativeCross";
 import GoldButton from "@/components/ui/GoldButton";
 import SectionTitle from "@/components/ui/SectionTitle";
+import ConfettiCelebration from "@/components/ui/ConfettiCelebration";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
@@ -29,6 +30,7 @@ type RSVPFormData = z.infer<typeof rsvpSchema>;
 export default function RSVP() {
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const {
     register,
@@ -51,6 +53,14 @@ export default function RSVP() {
     placeholder:text-[#b8a88a]
   `;
 
+  const selectClass = `
+    w-full border-b-2 border-[#C9A84E]/50 bg-white py-3
+    font-cormorant text-lg text-[#2a1f0e]
+    focus:outline-none focus:border-[#8a6a08]
+    transition-colors duration-300
+    cursor-pointer
+  `;
+
   const onSubmit = async (data: RSVPFormData) => {
     setIsLoading(true);
     try {
@@ -67,6 +77,7 @@ export default function RSVP() {
       }
 
       setSubmitted(true);
+      setShowConfetti(true);
       console.log("✅ RSVP envoyé avec succès!");
     } catch (error) {
       console.error("❌ Erreur RSVP:", error);
@@ -84,6 +95,7 @@ export default function RSVP() {
         backgroundColor: "#ffffff",
       }}
     >
+      {showConfetti && <ConfettiCelebration />}
       {/* Petites décorations */}
       <div
         className="absolute inset-0 pointer-events-none select-none"
@@ -340,7 +352,7 @@ export default function RSVP() {
                 <select
                   id="personnes"
                   {...register("personnes", { valueAsNumber: true })}
-                  className={`${inputClass} cursor-pointer`}
+                  className={selectClass}
                 >
                   {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
                     <option key={n} value={n}>

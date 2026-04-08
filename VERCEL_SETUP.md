@@ -2,113 +2,172 @@
 
 Ce guide explique comment configurer les variables d'environnement sur Vercel pour que les emails RSVP fonctionnent.
 
+## 🎯 Résumé du Système
+
+```
+LOCAL (.env.local)              GITHUB (non envoyé)         VERCEL (variables config)
+✓ Marche en développement        ✗ .env* ignoré par Git     ✓ Faut configurer manuellement
+```
+
 ## 🔑 Variables d'Environnement Requises
 
 Deux variables doivent être ajoutées à Vercel:
 
-| Variable | Valeur |
-|----------|--------|
-| `RESEND_API_KEY` | Ta clé API Resend (commence par `re_`) |
-| `CONTACT_EMAIL` | L'email qui recevra les réponses RSVP |
+| Variable         | Valeur                                        | Format              |
+| ---------------- | --------------------------------------------- | ------------------- |
+| `RESEND_API_KEY` | Ta clé API Resend (depuis https://resend.com) | `re_xxxxxxxxxxxx`   |
+| `CONTACT_EMAIL`  | L'email qui recevra les réponses RSVP         | `email@example.com` |
 
 ## 📋 Étapes de Configuration
 
-### 1. Récupère ta Clé Resend API
-- Va sur https://resend.com/dashboard
-- Va à **API Keys** (dans le menu à gauche)
-- Copie ta clé API (commençant par `re_`)
+### ÉTAPE 1 — Récupère ta Clé API Resend
 
-### 2. Accède à Vercel
-- Va sur https://vercel.com/dashboard
-- Sélectionne ton projet **le-ciel-ouvert**
+1. Va sur https://resend.com/dashboard
+2. Clique sur **"API Keys"** (menu gauche)
+3. Si pas de clé, clique **"Create API Key"**
+4. **Copie** la clé (elle ressemble à: `re_AFEQ7hAL_EFhpvv14WQRcstFx1YuRY38E`)
+5. ✅ _Garde cette clé à côté pour l'étape suivante_
 
-### 3. Configure les Variables d'Environnement
+### ÉTAPE 2 — Configure sur Vercel
 
-#### Via l'Interface Web (Recommandé):
-1. Clique sur **Settings** (onglet)
-2. Clique sur **Environment Variables** (menu à gauche)
-3. Ajoute les deux variables:
+**Option A: Interface Web (Recommandée) 🖱️**
 
-**Pour RESEND_API_KEY:**
-- **Name:** `RESEND_API_KEY`
-- **Value:** `re_AFEQ7hAL_EFhpvv14WQRcstFx1YuRY38E` (ou ta clé actuelle)
-- **Environments:** ✅ Production ✅ Preview ✅ Development
-- Clique **Save**
+1. Va sur https://vercel.com/dashboard
+2. Sélectionne ton projet **"le-ciel-ouvert"**
+3. Clique sur l'onglet **"Settings"** (en haut)
+4. Clique sur **"Environment Variables"** (menu gauche)
+5. Ajoute **RESEND_API_KEY**:
+   - **Name:** `RESEND_API_KEY`
+   - **Value:** `re_AFEQ7hAL_EFhpvv14WQRcstFx1YuRY38E` (ta clé)
+   - **Environments:** ✅ Production ✅ Preview ✅ Development
+   - Clique **"Save"**
+6. Ajoute **CONTACT_EMAIL**:
+   - **Name:** `CONTACT_EMAIL`
+   - **Value:** `devnet8057@gmail.com` (ou remplace par VOTRE adresse email réelle)
+   - **Environments:** ✅ Production ✅ Preview ✅ Development
+   - Clique **"Save"**
 
-**Pour CONTACT_EMAIL:**
-- **Name:** `CONTACT_EMAIL`
-- **Value:** `devnet8057@gmail.com`
-- **Environments:** ✅ Production ✅ Preview ✅ Development
-- Clique **Save**
+**Option B: Vercel CLI (Avancé) ⚡**
 
-#### Via Vercel CLI (Alternative):
 ```bash
+# Depuis le répertoire du projet
 vercel env add RESEND_API_KEY
-# Puis rentre la valeur: re_AFEQ7hAL_EFhpvv14WQRcstFx1YuRY38E
+# Puis rentre: re_AFEQ7hAL_EFhpvv14WQRcstFx1YuRY38E
 
 vercel env add CONTACT_EMAIL
-# Puis rentre la valeur: devnet8057@gmail.com
+# Puis rentre: devnet8057@gmail.com
 ```
 
-### 4. Redéploie sur Vercel
+### ÉTAPE 3 — Redéploie sur Vercel
 
-**Option A:** Redéploiement Automatique (le plus simple)
-- Une fois les variables ajoutées, Vercel redéplie automatiquement
-- Attends ~3-5 minutes
-- Visite ton site et teste le formulaire RSVP
+Après avoir configuré les variables, Vercel redéploie automatiquement en ~2-3 minutes.
 
-**Option B:** Redéploiement Manuel
-1. Va à https://vercel.com/dashboard
-2. Sélectionne **le-ciel-ouvert**
-3. Clique sur **Deployments** (onglet)
-4. Clique sur les 3 points à côté du dernier déploiement
-5. Clique **Redeploy**
-6. Attends la confirmation
+Ou force manuellement:
 
-## ✅ Teste ton Configuration
+1. Va sur https://vercel.com/dashboard
+2. Sélectionne **"le-ciel-ouvert"**
+3. Clique sur **"Deployments"** (onglet)
+4. Trouve ton dernier déploiement (listé en haut)
+5. Clique sur les **3 points ⋯** → **"Redeploy"**
+6. Attends la confirmation (vert ✅)
 
-1. Va sur https://le-ciel-ouvert.vercel.app (ou ton domaine personnalisé)
-2. Scroll jusqu'à la section **RSVP**
-3. Remplissez le formulaire:
+## ✅ Teste ta Configuration
+
+### Sur le site en ligne:
+
+1. Va sur https://le-ciel-ouvert.vercel.app (ou ton domaine perso)
+2. Scroll jusqu'à **"RSVP"**
+3. Remplace le formulaire avec **TON** email comme invité:
    - Prénom: `Test`
    - Nom: `Utilisateur`
-   - Email: Ton email personnel
+   - **Email: TonEmail@gmail.com** (pour voir la réponse)
    - Présence: `Oui`
    - Personnes: `1`
-   - Message (optionnel): `Test`
-4. Clique **Envoyer ma confirmation**
+4. Clique **"Envoyer ma confirmation"**
 
-## 📨 Vérifie les Emails
+### Vérifie les emails reçus:
 
-**Tu dois recevoir deux emails:**
+**Tu dois recevoir 2 emails:**
 
-1. **Email #1** → À `devnet8057@gmail.com` (email de notification)
+1. **Email #1** → À `devnet8057@gmail.com`
    - Sujet: `💍 RSVP — Test Utilisateur`
-   - Contenu: Récapitulatif de la réponse
+   - Contenu: Récapitulatif de la réponse RSVP
 
-2. **Email #2** → À l'adresse que tu as rentrée dans le formulaire (confirmation)
+2. **Email #2** → À ton adresse (ex: tonEmail@gmail.com)
    - Sujet: `💍 Votre réponse a bien été enregistrée`
    - Contenu: Remerciement personnalisé
+
+Si tu reçois les deux emails ✅ → **Configuration réussie !**
+
+---
+
+## 📝 Après les Tests — Remplacer par la Vraie Adresse
+
+Une fois que tout fonctionne:
+
+1. Va sur https://vercel.com/dashboard
+2. Sélectionne **"le-ciel-ouvert"**
+3. **Settings** → **Environment Variables**
+4. Clique sur **"CONTACT_EMAIL"** → Édite
+5. Remplace `devnet8057@gmail.com` par **L'ADRESSE RÉELLE** (ex: mariages@dirane.cm)
+6. Clique **"Save"**
+7. Vercel redéploie automatiquement ✅
+
+---
+
+## 🔒 Entre-temps: Protégez vos données
+
+✅ `RESEND_API_KEY` = privé (stockée en variable Vercel, jamais sur GitHub)
+✅ `.env.local` = privé (fichier local pour dev, ignoré par Git)
+✅ Tout fonctionne de la même manière partout 🎉
+
+---
+
+## ⚠️ Dépannage Rapide
+
+| Problème                            | Solution                                                                    |
+| ----------------------------------- | --------------------------------------------------------------------------- |
+| "Erreur lors de l'envoi"            | Vérifie que tu as saisi la clé `RESEND_API_KEY` exacte (commence par `re_`) |
+| Pas d'email reçu                    | Vérifie le email de `CONTACT_EMAIL` + regarde le spam                       |
+| Variable non trouvée                | Redéploie Vercel (Settings > Deployments > Redeploy)                        |
+| Fonctionne en local mais pas Vercel | `RESEND_API_KEY` peut être expirée — génère une nouvelle clé                |
+
+---
+
+## 🎯 Checklist Final
+
+- [ ] Clé `RESEND_API_KEY` récupérée de https://resend.com/dashboard
+- [ ] Variables ajoutées dans Vercel Settings > Environment Variables
+- [ ] Vercel redéployé (Settings > Deployments)
+- [ ] Test RSVP avec ton email — reçu 2 emails ✅
+- [ ] Remplacé `CONTACT_EMAIL` par l'adresse réelle
+- [ ] Dernier redéploiement effectué ✅
+
+🎊 **Prêt pour le mariage!**
 
 ## 🚨 Dépannage
 
 ### Les emails ne partent pas?
 
 **Problème #1: API Key invalide**
+
 - Vérifies que ta clé commence par `re_`
 - Teste la clé localement: `npm run dev` → Remplis le formulaire → Vérifies les logs du serveur
 
 **Problème #2: Email de destination non vérifié sur Resend**
+
 - Va sur https://resend.com/audiences
 - Ajoute ton email si manquant
 - Clique sur le lien dans le mail de confirmation
 
 **Problème #3: Variables non actualisées**
+
 - Vérifies que tu as redéployé après ajouter les variables
 - Attends 3-5 minutes après le redéploiement
 - Peut-être clear le cache du navigateur (Ctrl+Shift+Delete)
 
 **Problème #4: Vérifies les logs Vercel**
+
 - Va à https://vercel.com/dashboard
 - Sélectionne **le-ciel-ouvert**
 - Clique **Deployments** → dernier déploiement
@@ -116,10 +175,12 @@ vercel env add CONTACT_EMAIL
 - Clique sur `/api/rsvp` pour voir les logs
 
 ### Erreur "401 Unauthorized" dans les logs?
+
 - Ta clé Resend est probablement incorrecte ou expirée
 - Génère une nouvelle clé sur https://resend.com/dashboard
 
 ### Erreur "Missing RESEND_API_KEY"?
+
 - La variable d'environnement n'a pas été trouvée
 - Vérifies l'orthographe exacte: `RESEND_API_KEY` (sensible à la casse)
 
@@ -135,22 +196,22 @@ Si Resend ne fonctionne pas, tu peux utiliser **Formspree** (gratuit):
 
 ```tsx
 const onSubmit = async (data: RSVPFormData) => {
-  setIsLoading(true)
+  setIsLoading(true);
   try {
-    const response = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const response = await fetch("https://formspree.io/f/YOUR_FORM_ID", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
-    })
-    if (!response.ok) throw new Error('Erreur')
-    setSubmitted(true)
+    });
+    if (!response.ok) throw new Error("Erreur");
+    setSubmitted(true);
   } catch (error) {
-    console.error('Erreur:', error)
-    alert('Une erreur est survenue. Merci de réessayer.')
+    console.error("Erreur:", error);
+    alert("Une erreur est survenue. Merci de réessayer.");
   } finally {
-    setIsLoading(false)
+    setIsLoading(false);
   }
-}
+};
 ```
 
 6. Push et redéploie
