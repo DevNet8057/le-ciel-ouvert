@@ -1,15 +1,15 @@
-'use client'
-import { useEffect, useState } from 'react'
-import Image from 'next/image'
-import { motion, AnimatePresence } from 'framer-motion'
-import type { GalleryImage } from '@/types'
+"use client";
+import type { GalleryImage } from "@/types";
+import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 
 interface LightboxProps {
-  images: GalleryImage[]
-  currentIndex: number
-  onClose: () => void
-  onNext: () => void
-  onPrev: () => void
+  images: GalleryImage[];
+  currentIndex: number;
+  onClose: () => void;
+  onNext: () => void;
+  onPrev: () => void;
 }
 
 export default function Lightbox({
@@ -19,27 +19,27 @@ export default function Lightbox({
   onNext,
   onPrev,
 }: LightboxProps) {
-  const [dragStart, setDragStart] = useState(0)
-  const image = images[currentIndex]
+  const [dragStart, setDragStart] = useState(0);
+  const image = images[currentIndex];
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-      if (e.key === 'ArrowRight') onNext()
-      if (e.key === 'ArrowLeft') onPrev()
-    }
-    window.addEventListener('keydown', handleKey)
-    return () => window.removeEventListener('keydown', handleKey)
-  }, [onClose, onNext, onPrev])
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight") onNext();
+      if (e.key === "ArrowLeft") onPrev();
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [onClose, onNext, onPrev]);
 
   const handleDragEnd = (info: any) => {
-    const distance = info.offset.x
+    const distance = info.offset.x;
     if (distance < -50) {
-      onNext()
+      onNext();
     } else if (distance > 50) {
-      onPrev()
+      onPrev();
     }
-  }
+  };
 
   return (
     <AnimatePresence>
@@ -48,28 +48,29 @@ export default function Lightbox({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center"
+        className="fixed inset-0 z-50 bg-black/95"
         onClick={onClose}
       >
-        {/* Image fullscreen */}
+        {/* Image fullscreen container */}
         <motion.div
           key={`image-${currentIndex}`}
           initial={{ opacity: 0, x: 100 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -100 }}
-          transition={{ duration: 0.3, ease: 'easeOut' }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
           drag="x"
           dragElastic={0.2}
           dragConstraints={{ left: -50, right: 50 }}
           onDragEnd={handleDragEnd}
-          className="relative w-full h-full flex items-center justify-center cursor-grab active:cursor-grabbing"
+          className="absolute inset-0 w-screen h-screen cursor-grab active:cursor-grabbing flex items-center justify-center"
           onClick={(e) => e.stopPropagation()}
         >
           <Image
             src={image.src}
             alt={image.alt}
             fill
-            className="object-contain select-none"
+            sizes="100vw"
+            className="object-contain object-center select-none pointer-events-none"
             priority
             quality={95}
           />
@@ -88,27 +89,45 @@ export default function Lightbox({
 
         {/* Navigation précédent */}
         <motion.button
-          onClick={(e) => { e.stopPropagation(); onPrev() }}
-          whileHover={{ scale: 1.1, color: '#D4AF37' }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onPrev();
+          }}
+          whileHover={{ scale: 1.1, color: "#D4AF37" }}
           whileTap={{ scale: 0.95 }}
           className="fixed left-6 top-1/2 -translate-y-1/2 text-white/60 hover:text-[#D4AF37] transition-colors z-10 p-3 rounded-full hover:bg-white/10"
           aria-label="Photo précédente"
         >
           <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
-            <path d="M24 8L12 20L24 32" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path
+              d="M24 8L12 20L24 32"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </motion.button>
 
         {/* Navigation suivant */}
         <motion.button
-          onClick={(e) => { e.stopPropagation(); onNext() }}
-          whileHover={{ scale: 1.1, color: '#D4AF37' }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onNext();
+          }}
+          whileHover={{ scale: 1.1, color: "#D4AF37" }}
           whileTap={{ scale: 0.95 }}
           className="fixed right-6 top-1/2 -translate-y-1/2 text-white/60 hover:text-[#D4AF37] transition-colors z-10 p-3 rounded-full hover:bg-white/10"
           aria-label="Photo suivante"
         >
           <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
-            <path d="M16 8L28 20L16 32" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path
+              d="M16 8L28 20L16 32"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </motion.button>
 
@@ -131,5 +150,5 @@ export default function Lightbox({
         </motion.div>
       </motion.div>
     </AnimatePresence>
-  )
+  );
 }
