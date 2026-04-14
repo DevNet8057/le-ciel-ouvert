@@ -133,16 +133,16 @@ wedding-site/
 │   ├── components/
 │   │   ├── layout/
 │   │   │   ├── Navigation.tsx         ← Navbar sticky avec smooth scroll
-│   │   │   └── Footer.tsx             ← Pied de page simple
+│   │   │   ├── LenisProvider.tsx      ← Wrapper pour initialiser Lenis
+│   │   │   └── Footer.tsx             ← Pied de page
 │   │   │
 │   │   ├── sections/
 │   │   │   ├── Hero.tsx               ← Section 1 : Hero plein écran
 │   │   │   ├── Story.tsx              ← Section 2 : Notre Histoire
-│   │   │   ├── Program.tsx            ← Section 3 : Le Programme
+│   │   │   ├── Venue.tsx              ← Section 3 : Lieux & Horaires
 │   │   │   ├── Gallery.tsx            ← Section 4 : Galerie photos
 │   │   │   ├── DressCode.tsx          ← Section 5 : Dress Code
-│   │   │   ├── Venue.tsx              ← Section 6 : Les Lieux
-│   │   │   └── RSVP.tsx               ← Section 7 : Formulaire RSVP
+│   │   │   └── RSVP.tsx               ← Section 6 : Formulaire RSVP
 │   │   │
 │   │   └── ui/
 │   │       ├── Countdown.tsx          ← Compte à rebours animé
@@ -150,9 +150,10 @@ wedding-site/
 │   │       ├── ScrollReveal.tsx       ← Wrapper animation au scroll
 │   │       ├── GoldButton.tsx         ← Bouton doré réutilisable
 │   │       ├── SectionTitle.tsx       ← Titre de section animé
-│   │       ├── Lightbox.tsx           ← Visionneuse photos galerie
+│   │       ├── Lightbox.tsx           ← Visionneuse photos galerie fullscreen
 │   │       ├── DecorativeCross.tsx    ← Croix décorative SVG animée
-│   │       └── GoldenParticles.tsx    ← Particules dorées flottantes
+│   │       ├── GoldenParticles.tsx    ← Particules dorées flottantes
+│   │       └── ConfettiCelebration.tsx← Confettis & particules de célébration
 │   │
 │   ├── hooks/
 │   │   ├── useLenis.ts                ← Hook pour smooth scroll Lenis
@@ -162,7 +163,8 @@ wedding-site/
 │   ├── lib/
 │   │   ├── animations.ts              ← Variants Framer Motion réutilisables
 │   │   ├── constants.ts               ← Données du mariage (dates, lieux, etc.)
-│   │   └── utils.ts                   ← Fonctions utilitaires
+│   │   ├── placeholders.ts            ← URLs images temporaires (Unsplash)
+│   │   └── utils.ts                   ← Fonctions utilitaires (cn, shuffleArray, etc.)
 │   │
 │   └── types/
 │       └── index.ts                   ← Types TypeScript globaux
@@ -985,7 +987,405 @@ export default function RSVP() {
 
 ---
 
-## 🖼️ Gestion des Photos
+## 🧩 Composants Additionnels
+
+### LenisProvider.tsx — Wrapper Lenis
+```tsx
+// src/components/layout/LenisProvider.tsx
+'use client'
+import { useLenis } from '@/hooks/useLenis'
+
+export default function LenisProvider({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  useLenis()
+  return <>{children}</>
+}
+
+// Usage dans app.tsx ou layout.tsx :
+// <LenisProvider>
+//   <Navigation />
+//   <main>{children}</main>
+//   <Footer />
+// </LenisProvider>
+```
+
+### ConfettiCelebration.tsx — Particules de Fête
+```tsx
+// src/components/ui/ConfettiCelebration.tsx
+'use client'
+import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
+
+interface ConfettiParticle {
+  id: number
+  left: number
+  delay: number
+  duration: number
+  size: number
+  type: 'flower' | 'sparkle' | 'ribbon'
+}
+
+export default function ConfettiCelebration() {
+  const [particles, setParticles] = useState<ConfettiParticle[]>([])
+  const [isVisible, setIsVisible] = useState(true)
+
+  useEffect(() => {
+    // Générer 50 particules aléatoires
+    const newParticles = Array.from({ length: 50 }, (_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      delay: Math.random() * 0.3,
+      duration: 2.5 + Math.random() * 1,
+      size: 4 + Math.random() * 8,
+      type: ['flower', 'sparkle', 'ribbon'][Math.floor(Math.random() * 3)] as 'flower' | 'sparkle' | 'ribbon',
+    }))
+
+    setParticles(newParticles)
+
+    // Disparaître après animation
+    const timer = setTimeout(() => setIsVisible(false), 4000)
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (!isVisible) return null
+
+  return (
+    <div className="fixed inset-0 pointer-events-none overflow-hidden">
+      {particles.map((particle) => {
+        let emoji = '✨'
+        if (particle.type === 'flower') emoji = ['🌸', '🌹', '🌺', '🌻'][Math.floor(Math.random() * 4)]
+        else if (particle.type === 'ribbon') emoji = '🎀'
+
+        return (
+          <motion.div
+            key={particle.id}
+            initial={{ opacity: 0, y: 'calc(100vh + 50px)' }}
+            animate={{ opacity: [0, 1, 0], y: '-50px', x: [0, (Math.random() - 0.5) * 100, 0] }}
+            transition={{ duration: particle.duration, delay: particle.delay, ease: 'easeOut' }}
+            className="absolute text-3xl"
+            style={{ left: `${particle.left}%`, fontSize: particle.size + 'px' }}
+          >
+            {emoji}
+          </motion.div>
+        )
+      })}
+    </div>
+  )
+}
+```
+
+### GoldButton.tsx — Bouton Doré Réutilisable
+```tsx
+// src/components/ui/GoldButton.tsx
+'use client'
+import { motion, MotionProps } from 'framer-motion'
+
+interface GoldButtonProps extends MotionProps {
+  children: React.ReactNode
+  onClick?: () => void
+  href?: string
+  disabled?: boolean
+  className?: string
+}
+
+export default function GoldButton({
+  children,
+  onClick,
+  href,
+  disabled = false,
+  className = '',
+  ...motionProps
+}: GoldButtonProps) {
+  const Component = href ? 'a' : 'button'
+
+  return (
+    <motion.div
+      whileHover={{ scale: disabled ? 1 : 1.05 }}
+      whileTap={{ scale: disabled ? 1 : 0.97 }}
+      {...motionProps}
+    >
+      <Component
+        href={href}
+        onClick={onClick}
+        disabled={disabled}
+        className={`btn-gold font-cinzel text-white px-8 py-3 rounded-full text-sm uppercase tracking-[0.2em] inline-block disabled:opacity-60 ${className}`}
+      >
+        {children}
+      </Component>
+    </motion.div>
+  )
+}
+```
+
+---
+
+## 📚 Types Globaux (types/index.ts)
+
+```typescript
+// src/types/index.ts
+
+export interface WeddingEvent {
+  id: string
+  date: string
+  day: string
+  title: string
+  time: string
+  location: string
+  address: string
+  mapsUrl: string
+  icon: string
+  description: string
+}
+
+export interface Venue {
+  name: string
+  role: string
+  address: string
+  mapsUrl: string
+}
+
+export interface DressCodeColor {
+  name: string
+  hex: string
+  label: string
+}
+
+export interface GalleryImage {
+  src: string
+  alt: string
+  width?: number
+  height?: number
+}
+
+export interface RSVPFormData {
+  prenom: string
+  nom: string
+  email?: string
+  phone?: string
+  presence: 'oui' | 'non'
+  personnes: number
+  message?: string
+}
+
+export interface ParticleConfig {
+  id: number
+  x: number
+  y: number
+  size: number
+  duration: number
+  delay: number
+}
+
+export const WEDDING = {
+  // Défini dans constants.ts
+} as const
+```
+
+---
+
+## 🛠️ Fonctions Utilitaires (lib/utils.ts)
+
+```typescript
+// src/lib/utils.ts
+
+import type { ParticleConfig } from '@/types'
+import React from 'react'
+
+/**
+ * Combine des classnames conditionnellement
+ * @example cn('px-4', disabled && 'opacity-50') → 'px-4 opacity-50'
+ */
+export function cn(...classes: (string | undefined | null | false)[]): string {
+  return classes.filter(Boolean).join(' ')
+}
+
+/**
+ * Parser texte markdown simple : **texte** → HTML
+ * @example parseBoldText('Bonjour **monde**')
+ */
+export function parseBoldText(text: string): React.ReactNode[] {
+  const parts = text.split(/(\*\*.*?\*\*)/g)
+  return parts.map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return React.createElement(
+        'strong',
+        { key: i, className: 'font-semibold text-[#1A2744]' },
+        part.slice(2, -2)
+      )
+    }
+    return part
+  })
+}
+
+/**
+ * Formater une date en français
+ * @example formatDate(new Date()) → 'jeudi 14 avril 2026'
+ */
+export function formatDate(date: Date): string {
+  return date.toLocaleDateString('fr-FR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+}
+
+/**
+ * Mélanger un tableau avec seed pour cohérence client-side
+ * @example shuffleArray([1,2,3,4,5], 12345) → [3,1,5,2,4]
+ */
+export function shuffleArray<T>(array: T[], seed: number = 472): T[] {
+  const arr = [...array]
+  // Fisher-Yates shuffle avec seed
+  let random = seed
+  for (let i = arr.length - 1; i > 0; i--) {
+    random = (random * 9301 + 49297) % 233280
+    const j = Math.floor((random / 233280) * (i + 1))
+    ;[arr[i], arr[j]] = [arr[j], arr[i]]
+  }
+  return arr
+}
+
+/**
+ * Générer les particules dorées flottantes
+ * Valeurs fixes pour éviter l'hydration mismatch Next.js
+ */
+export function generateParticles(count: number = 16): ParticleConfig[] {
+  const configs: ParticleConfig[] = [
+    { id: 1, x: 8, y: 15, size: 3, duration: 4.2, delay: 0 },
+    { id: 2, x: 18, y: 72, size: 2, duration: 5.8, delay: 0.5 },
+    { id: 3, x: 28, y: 35, size: 4, duration: 3.9, delay: 1 },
+    { id: 4, x: 38, y: 88, size: 2, duration: 6.1, delay: 1.5 },
+    { id: 5, x: 48, y: 20, size: 3, duration: 4.7, delay: 0.3 },
+    { id: 6, x: 58, y: 55, size: 2, duration: 5.3, delay: 0.8 },
+    { id: 7, x: 68, y: 80, size: 4, duration: 4.0, delay: 1.2 },
+    { id: 8, x: 78, y: 40, size: 3, duration: 6.5, delay: 0.6 },
+    { id: 9, x: 88, y: 65, size: 2, duration: 3.7, delay: 1.8 },
+    { id: 10, x: 12, y: 50, size: 3, duration: 5.1, delay: 0.9 },
+    { id: 11, x: 22, y: 10, size: 2, duration: 4.4, delay: 1.4 },
+    { id: 12, x: 35, y: 60, size: 4, duration: 5.6, delay: 0.2 },
+    { id: 13, x: 52, y: 92, size: 2, duration: 3.8, delay: 1.7 },
+    { id: 14, x: 65, y: 25, size: 3, duration: 6.2, delay: 0.4 },
+    { id: 15, x: 75, y: 70, size: 2, duration: 4.9, delay: 1.1 },
+    { id: 16, x: 92, y: 45, size: 3, duration: 5.4, delay: 0.7 },
+  ]
+  return configs.slice(0, count)
+}
+```
+
+---
+
+## 📷 Images Temporaires (lib/placeholders.ts)
+
+```typescript
+// src/lib/placeholders.ts
+// Images temporaires pour le développement — Remplace par tes vraies photos
+
+export const PLACEHOLDER_HERO = 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1920&q=80'
+
+export const PLACEHOLDER_STORY = [
+  'https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?w=800&q=80',
+  'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=800&q=80',
+  'https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=800&q=80',
+  'https://images.unsplash.com/photo-1523438885200-e635ba2c371e?w=800&q=80',
+]
+
+export const PLACEHOLDER_GALLERY = Array.from({ length: 9 }, (_, i) =>
+  `https://images.unsplash.com/photo-${
+    [
+      '1519741497674-611481863552',
+      '1583875762487-5f8f7c718d14',
+      '1511285560929-80b5dd3cd3f4',
+      '1529634806980-85c3dd6d34ac',
+      '1522673607200-164d1b6ce486',
+      '1537633552985-df8429e8048b',
+      '1523438885200-e635ba2c371e',
+      '1491438590914-bc09fcaaf77a',
+      '1465495976277-4387d4b0b4c6',
+    ][i]
+  }?w=800&q=75`
+)
+```
+
+---
+
+## 🎬 Animations Avancées — Variants Complémentaires (lib/animations.ts)
+
+```typescript
+// Ajouter ces variants aux existants :
+
+// Stagger horizontal
+export const staggerSlow: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.15
+    }
+  }
+}
+
+// Rotate in
+export const rotateIn: Variants = {
+  hidden: { opacity: 0, rotate: -10 },
+  visible: {
+    opacity: 1,
+    rotate: 0,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+  }
+}
+
+// Slide horizontal
+export const slideInLeft: Variants = {
+  hidden: { x: -100, opacity: 0 },
+  visible: {
+    x: 0,
+    opacity: 1,
+    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] }
+  }
+}
+
+export const slideInRight: Variants = {
+  hidden: { x: 100, opacity: 0 },
+  visible: {
+    x: 0,
+    opacity: 1,
+    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] }
+  }
+}
+
+// Bounce subtle
+export const bounceIn: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 100,
+      damping: 12,
+      mass: 0.5
+    }
+  }
+}
+```
+
+---
+
+## 📌 Lightbox Fullscreen — Fonctionnalités Avancées
+
+Le composant **Lightbox.tsx** supporte désormais:
+- ✅ **Vue fullscreen** : 100% écran sur tous les appareils
+- ✅ **Navigation drag/swipe** : Glissez gauche/droite pour naviguer
+- ✅ **Clavier** : Arrow Left/Right pour naviguer, Escape pour fermer
+- ✅ **Animations fluides** : Slide horizontal entre images
+- ✅ **Adaptation responsive** : Fonctionne parfaitement mobile/tablette/desktop
+- ✅ **Compteur d'images** : Affichage "X / Y" + titre de l'image
+
+
 
 ### Instructions de Remplacement des Images
 ```
