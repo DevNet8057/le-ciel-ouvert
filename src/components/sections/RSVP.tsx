@@ -1,8 +1,8 @@
 "use client";
+import ConfettiCelebration from "@/components/ui/ConfettiCelebration";
 import DecorativeCross from "@/components/ui/DecorativeCross";
 import GoldButton from "@/components/ui/GoldButton";
 import SectionTitle from "@/components/ui/SectionTitle";
-import ConfettiCelebration from "@/components/ui/ConfettiCelebration";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";

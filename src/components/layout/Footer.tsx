@@ -64,14 +64,14 @@ export default function Footer() {
               Équipe de Développement
             </h4>
             <p className="font-inter text-white/40 text-xs">
-              Conception et développement: @NKBV
+              Conception et développement: Benilde NJEUTCHOU
             </p>
           </div>
 
           {/* Contact Section - Icônes Animées */}
           <div className="text-center">
             <h4 className="font-inter text-white/50 text-xs uppercase tracking-widest mb-8">
-              Nous Contacter
+              Nous Contacter Pour Vos Travaux
             </h4>
 
             {/* Icônes de Contact */}
